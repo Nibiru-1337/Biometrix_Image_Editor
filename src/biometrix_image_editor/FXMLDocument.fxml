@@ -11,9 +11,9 @@
         <Button fx:id="loadImage" layoutX="126" layoutY="90" onAction="#loadImage" prefHeight="31.0" prefWidth="103.0" text="Load image" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="190.0" />
         <Label fx:id="status" layoutX="258.0" layoutY="280.0" minHeight="16" minWidth="69" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" />
       <ImageView fx:id="imgView" fitHeight="700.0" fitWidth="1080.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
-      <Button fx:id="saveImage" layoutX="341.0" layoutY="759.0" mnemonicParsing="false" onAction="#saveImg" text="Save Image" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="350.0" />
+      <Button fx:id="saveImage" layoutX="650.0" layoutY="754.0" mnemonicParsing="false" onAction="#saveImg" text="Save Image" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="800.0" />
       <Button fx:id="bGreyScale" layoutX="1100.0" layoutY="385.0" mnemonicParsing="false" onAction="#convertGreyScale" prefHeight="31.0" prefWidth="169.0" text="Greyscale" AnchorPane.topAnchor="15.0" />
-      <Button fx:id="loadDefault" layoutX="170.0" layoutY="728.0" mnemonicParsing="false" onAction="#loadImage" text="Load default" AnchorPane.leftAnchor="190.0" />
+      <Button fx:id="loadDefault" layoutX="352.0" layoutY="759.0" mnemonicParsing="false" onAction="#loadImage" text="Load default" AnchorPane.leftAnchor="500.0" />
       <Button fx:id="bColorInverse" layoutX="1100.0" layoutY="435.0" mnemonicParsing="false" onAction="#convertColorInverse" prefHeight="31.0" prefWidth="169.0" text="Color Inverse" AnchorPane.topAnchor="60.0" />
       <Slider fx:id="sThreshold" layoutX="1100.0" layoutY="314.0" majorTickUnit="50.0" max="255.0" minorTickCount="10" prefHeight="45.0" prefWidth="169.0" showTickLabels="true" showTickMarks="true" value="125.0" />
       <Button fx:id="bThreshold" layoutX="1100.0" layoutY="258.0" mnemonicParsing="false" onAction="#activatedThreshold" prefHeight="31.0" prefWidth="169.0" text="Threshold: Off" />
@@ -24,6 +24,14 @@
       <Button fx:id="bHighPass" layoutX="1100.0" layoutY="365.0" mnemonicParsing="false" onAction="#highPassFilter" prefHeight="31.0" prefWidth="169.0" text="High Pass Filter" />
       <Button fx:id="bGauss" layoutX="1100.0" layoutY="450.0" mnemonicParsing="false" onAction="#gaussFilter" prefHeight="31.0" prefWidth="169.0" text="Gauss Filter" />
       <Button fx:id="bSobel" layoutX="1100.0" layoutY="494.0" mnemonicParsing="false" onAction="#sobelFilter" prefHeight="31.0" prefWidth="169.0" text="Sobel Filter" />
+      <BorderPane layoutX="1100.0" layoutY="544.0" prefHeight="157.0" prefWidth="169.0">
+         <top>
+            <Label prefHeight="68.0" prefWidth="169.0" text="Remember: Apply the proper threshold before attempting to find pupil" wrapText="true" BorderPane.alignment="CENTER" />
+         </top>
+         <center>
+            <Button fx:id="bFindPupilOrg" mnemonicParsing="false" onAction="#findPupil" prefHeight="31.0" prefWidth="172.0" text="Draw over pupil" BorderPane.alignment="CENTER" />
+         </center>
+      </BorderPane>
     </children>
    <effect>
       <DropShadow />
