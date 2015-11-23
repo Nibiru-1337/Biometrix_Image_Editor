@@ -1,7 +1,16 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ *             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+ *                     Version 2, December 2004
+ *
+ *  Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
+ *
+ *  Everyone is permitted to copy and distribute verbatim or modified
+ *  copies of this license document, and changing it is allowed as long
+ *  as the name is changed.
+ *
+ *             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+ *    TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+ *
  */
 package biometrix_image_editor;
 
@@ -90,5 +99,10 @@ public class basicImageIO {
         boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
         WritableRaster raster = bi.copyData(null);
         return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+    }
+    //function that determies if a pixel is black
+    protected static boolean isBlack(BufferedImage image,int posX,int posY){
+        int color = image.getRGB(posX,posY);
+        return ((color & 0x00FFFFFF) == 0);
     }
 }
