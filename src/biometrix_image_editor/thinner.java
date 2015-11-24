@@ -34,14 +34,27 @@ public class thinner {
         int width = img.getWidth();
         int height = img.getHeight();
         int [][] bitmap = new int [width][height];
-        //mark all black pixels 1
+        //mark all black pixels 1, white pixels 0
         for (int x = 0; x < width; x++){
             for(int y = 0; y < height; y++){
                 if (basicImageIO.isBlack(img,x,y))
                     bitmap[x][y] = 1;
+                else
+                    bitmap[x][y] = 0;
             }
         }
+        printBitmap(bitmap, width, height);
         return null;
+    }
+    
+    private static void printBitmap(int[][] bitmap, int width, int height){
+        //pritn all bitmap values
+        for (int x = 0; x < width; x++){
+            for(int y = 0; y < height; y++){
+                    System.out.print(String.valueOf(bitmap[x][y]));
+            }
+            System.out.print("\n");
+        }
     }
     
     private static int[][] findTwos(){

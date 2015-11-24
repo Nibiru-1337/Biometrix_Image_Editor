@@ -210,6 +210,10 @@ public class FXMLDocumentController implements Initializable {
         img = originalImg;
     }
     @FXML
+    private void doThinning(ActionEvent event){
+        thinner.thinImg(img);
+    }
+    @FXML
     private void loadImage(ActionEvent event) {
         //pass event because its used to determine if it should load default
         img = basicImageIO.load(status, event);

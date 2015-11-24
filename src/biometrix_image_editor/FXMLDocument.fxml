@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
                     Version 2, December 2004
@@ -28,7 +29,7 @@
       <ImageView fx:id="imgView" fitHeight="700.0" fitWidth="1080.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
       <Button fx:id="saveImage" layoutX="650.0" layoutY="754.0" mnemonicParsing="false" onAction="#saveImg" text="Save Image" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="800.0" />
       <Button fx:id="bGreyScale" layoutX="1100.0" layoutY="385.0" mnemonicParsing="false" onAction="#convertGreyScale" prefHeight="31.0" prefWidth="169.0" text="Greyscale" AnchorPane.topAnchor="15.0" />
-      <Button fx:id="loadDefault" layoutX="352.0" layoutY="759.0" mnemonicParsing="false" onAction="#loadImage" text="Load default" AnchorPane.leftAnchor="500.0" />
+      <Button fx:id="loadEye" layoutX="352.0" layoutY="759.0" mnemonicParsing="false" onAction="#loadImage" prefHeight="31.0" prefWidth="130.0" text="Eye" AnchorPane.leftAnchor="500.0" />
       <Button fx:id="bColorInverse" layoutX="1100.0" layoutY="435.0" mnemonicParsing="false" onAction="#convertColorInverse" prefHeight="31.0" prefWidth="169.0" text="Color Inverse" AnchorPane.topAnchor="60.0" />
       <Slider fx:id="sThreshold" layoutX="1100.0" layoutY="314.0" majorTickUnit="50.0" max="255.0" minorTickCount="10" prefHeight="45.0" prefWidth="169.0" showTickLabels="true" showTickMarks="true" value="125.0" />
       <Button fx:id="bThreshold" layoutX="1100.0" layoutY="258.0" mnemonicParsing="false" onAction="#activatedThreshold" prefHeight="31.0" prefWidth="169.0" text="Threshold: Off" />
@@ -39,14 +40,18 @@
       <Button fx:id="bHighPass" layoutX="1100.0" layoutY="365.0" mnemonicParsing="false" onAction="#highPassFilter" prefHeight="31.0" prefWidth="169.0" text="High Pass Filter" />
       <Button fx:id="bGauss" layoutX="1100.0" layoutY="450.0" mnemonicParsing="false" onAction="#gaussFilter" prefHeight="31.0" prefWidth="169.0" text="Gauss Filter" />
       <Button fx:id="bSobel" layoutX="1100.0" layoutY="494.0" mnemonicParsing="false" onAction="#sobelFilter" prefHeight="31.0" prefWidth="169.0" text="Sobel Filter" />
-      <BorderPane layoutX="1100.0" layoutY="544.0" prefHeight="157.0" prefWidth="169.0">
+      <BorderPane layoutX="1100.0" layoutY="544.0" prefHeight="198.0" prefWidth="169.0" style="-fx-border-color: black;">
          <top>
-            <Label prefHeight="68.0" prefWidth="169.0" text="Remember: Apply the proper threshold before attempting to find pupil" wrapText="true" BorderPane.alignment="CENTER" />
+            <Label prefHeight="115.0" prefWidth="167.0" text="Remember: Apply the proper threshold before attempting to find pupil. Normalize and binarize before thinning." wrapText="true" BorderPane.alignment="CENTER" />
          </top>
          <center>
             <Button fx:id="bFindPupilOrg" mnemonicParsing="false" onAction="#findPupil" prefHeight="31.0" prefWidth="172.0" text="Draw over pupil" BorderPane.alignment="CENTER" />
          </center>
+         <bottom>
+            <Button fx:id="bThinning" mnemonicParsing="false" onAction="#doThinning" prefHeight="31.0" prefWidth="175.0" text="Thinning" BorderPane.alignment="CENTER" />
+         </bottom>
       </BorderPane>
+      <Button fx:id="loadFingerprint" layoutX="500.0" layoutY="727.0" mnemonicParsing="false" onAction="#loadImage" prefHeight="31.0" prefWidth="130.0" text="Fingerprint" />
     </children>
    <effect>
       <DropShadow />
