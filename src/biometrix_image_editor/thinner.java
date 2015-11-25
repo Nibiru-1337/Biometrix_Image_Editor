@@ -29,11 +29,14 @@ public class thinner {
                                                 195, 197, 199, 205, 207, 208, 212, 213, 214, 215, 216, 217,
                                                 221, 222, 223, 224, 225, 227, 237, 239, 240, 241, 243, 244,
                                                 247, 248, 249, 251, 252, 253};
+    private static int [][] bitmap;
+    private static int width;
+    private static int height;
     //An image thinning method implemented(not yet) with KMM algorithm
     protected static BufferedImage thinImg(BufferedImage img){
-        int width = img.getWidth();
-        int height = img.getHeight();
-        int [][] bitmap = new int [width][height];
+        width = img.getWidth();
+        height = img.getHeight();
+        bitmap = new int [width][height];
         //mark all black pixels 1, white pixels 0
         for (int x = 0; x < width; x++){
             for(int y = 0; y < height; y++){
@@ -43,11 +46,12 @@ public class thinner {
                     bitmap[x][y] = 0;
             }
         }
-        printBitmap(bitmap, width, height);
+        findNums();
+        printBitmap(bitmap);
         return null;
     }
     
-    private static void printBitmap(int[][] bitmap, int width, int height){
+    private static void printBitmap(int[][] bitmap){
         //pritn all bitmap values
         for (int x = 0; x < width; x++){
             for(int y = 0; y < height; y++){
@@ -57,8 +61,29 @@ public class thinner {
         }
     }
     
-    private static int[][] findTwos(){
+    private static int[][] findNums(){
+        //first iterate over all bits in bitmap (start from 1, end at n-1)
+        for (int x = 1; x < width-1; x++){
+            for ( int y = 1; y < height-1; y++){
+                //if a bit is marked, check it's neighbors
+                if ( bitmap[x][y] == 1){
+                    
+                    //find 3's with only corner sticking out
+                    if (bitmap[x+1][y+1] == 0) bitmap[x][y] = 3;
+                    else if (bitmap[x+1][y-1] == 0) bitmap[x][y] = 3;
+                    else if (bitmap[x-1][y+1] == 0) bitmap[x][y] = 3;
+                    else if (bitmap[x-1][y-1] == 0) bitmap[x][y] = 3;
+                    //change it to 2 if it also has edges sticking out
+                    if (bitmap[x+1][y] == 0) bitmap[x][y] = 2;
+                    else if (bitmap[x-1][y] == 0) bitmap[x][y] = 2;
+                    else if (bitmap[x][y+1] == 0) bitmap[x][y] = 2;
+                    else if (bitmap[x][y-1] == 0) bitmap[x][y] = 2;
+                    
+                }
+            }
+        }
         
         return null;
     }
+    
 }
