@@ -14,6 +14,7 @@
  */
 package biometrix_image_editor;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 /**
@@ -21,7 +22,7 @@ import java.awt.image.BufferedImage;
  * @author Nibiru
  */
 public class thinner {
-    private static final int deletionArray [] = {3, 5, 7, 12, 13, 14 ,21, 22, 23, 28, 29, 30,
+    private static final int[] deletionArray = {3, 5, 7, 12, 13, 14 ,21, 22, 23, 28, 29, 30,
                                                 52, 53, 54, 55, 56, 60, 63, 65, 67, 69, 71, 77,
                                                 81, 83, 84, 85, 86, 87, 91, 92, 93, 94, 95, 97,
                                                 103, 109, 111, 112, 113, 115, 118, 119, 120, 121, 123, 124,
@@ -47,8 +48,37 @@ public class thinner {
             }
         }
         findNums();
+        bitmap = deletionRound(bitmap);
+        //strange loop
+        int N = 2, iMAX = height*width, i = 1;
+        while ( i < iMAX){
+            
+        }
+        
+        
         printBitmap(bitmap);
-        return null;
+        
+        return bitMapToImg(bitmap);
+    }
+    
+    private static BufferedImage bitMapToImg(int[][] bm){
+        Color myWhite = new Color(255, 255, 255);
+        int white = myWhite.getRGB();
+        Color myBlack = new Color(0, 0, 0);
+        int black = myBlack.getRGB();
+        
+        int width = bm.length;
+        int height = bm[0].length;
+        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        for (int x = 0;x < width; x++){
+            for (int y = 0; y < height; y++){
+                if (bm[x][y] == 0)
+                    img.setRGB(x, y, white);
+                else
+                    img.setRGB(x, y, black);
+            }
+        }
+        return img;
     }
     
     private static void printBitmap(int[][] bitmap){
@@ -78,12 +108,53 @@ public class thinner {
                     else if (bitmap[x-1][y] == 0) bitmap[x][y] = 2;
                     else if (bitmap[x][y+1] == 0) bitmap[x][y] = 2;
                     else if (bitmap[x][y-1] == 0) bitmap[x][y] = 2;
-                    
                 }
             }
+            
         }
         
         return null;
     }
+    //iterate over all bits in bitmap (start from 1, end at n-1)
+    //and delete all values having weight in deletionArray
+    private static int [][] deletionRound(int[][] bm){
+
+        for (int x = 1; x < width-1; x++){
+            for ( int y = 1; y < height-1; y++){
+                if ( contains(deletionArray, sumNeighbors(bm, x, y)) ){
+                    bm[x][y] = 0;
+                }
+            }
+        }
+        return bm;
+    }
+
+    //iterrate over neighbors of x,y and calculate weight
+    private static int sumNeighbors(int[][] bm, int x, int y){
+        int sum = 0, tmpX = 0 , tmpY = 0;
+        int [][] weight = { {128,1,2},{64,0,4},{32,16,8} };
+        //iterate over neighbors of pixel x,y
+        for(int i = x-1; i < x+2; i++ ){
+            for(int j = y-1; j < y+2; j++){
+                if ( bm[i][j] != 0 ){
+                    sum += weight[tmpX][tmpY];
+                    
+                }
+                tmpY++;
+                
+            }
+            tmpX++;
+            tmpY=0;
+        }
+        return sum;
+    }
     
+    //check if int array contains a value
+    private static boolean contains(int[] haystack, int needle) {
+        for (int i = 0; i < haystack.length; i++){
+            if (haystack[i] == needle) 
+                return true;
+        }
+        return false;
+    }
 }

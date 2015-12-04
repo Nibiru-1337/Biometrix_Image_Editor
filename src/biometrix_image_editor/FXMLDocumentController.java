@@ -211,7 +211,9 @@ public class FXMLDocumentController implements Initializable {
     }
     @FXML
     private void doThinning(ActionEvent event){
-        thinner.thinImg(img);
+        img = thinner.thinImg(img);
+        setImgView();
+        
     }
     @FXML
     private void loadImage(ActionEvent event) {
