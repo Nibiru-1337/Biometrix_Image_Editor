@@ -28,8 +28,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-
-
 /**
  *
  * @author Nibiru
@@ -211,9 +209,9 @@ public class FXMLDocumentController implements Initializable {
     }
     @FXML
     private void doThinning(ActionEvent event){
-        img = thinner.thinImg(img);
+        img = thinner.thinImgKMM(img);
         setImgView();
-        
+        basicImageIO.save2(img);
     }
     @FXML
     private void loadImage(ActionEvent event) {

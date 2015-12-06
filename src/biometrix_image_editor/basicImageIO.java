@@ -89,11 +89,23 @@ public class basicImageIO {
         File file = fc.showSaveDialog(null);
         if(file != null){
             try{
-                ImageIO.write(img, "jpeg", file);
+                ImageIO.write(img, "png", file);
                 status.setText("Image saved!");
             }
             catch(IOException e){
                 status.setText("Image save error!");
+            }
+        }
+    }
+    //display a file chooser and save image
+    protected static void save2(BufferedImage img){
+        System.out.println("Saving image...");
+        File file = new File("src/output.jpg");
+        if(file != null){
+            try{
+                ImageIO.write(img, "png", file);
+            }
+            catch(IOException e){
             }
         }
     }
