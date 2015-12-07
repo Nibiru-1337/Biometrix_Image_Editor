@@ -60,13 +60,14 @@ public class basicImageIO {
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Image files", "*.jpeg","*.jpg","*.png");
         fc.getExtensionFilters().add(extFilter);
         File imgf;
-        System.out.println(event.getSource().toString());
-        if ("Button[id=loadFingerprint, styleClass=button]'Fingerprint'".equals(event.getSource().toString()))
-            //TODO: PLACE IMG IN RESOUCE AND GET HANDLE FROM THERE
-             imgf = new File("S:\\Nibiru\\Documents\\NetBeansProjects\\Biometrix_Image_Editor\\src\\biometrix_image_editor\\r1.bmp");
+        String path = System.getProperty("user.dir");
+        //System.out.println(event.getSource().toString());
+        if ("Button[id=loadFingerprint, styleClass=button]'Fingerprint'".equals(event.getSource().toString())){
+            //System.out.println(path + "/src/biometrix_image_editor/r1.bmp");
+            imgf = new File(path + "/src/biometrix_image_editor/r1.bmp");
+        }
         else if ("Button[id=loadEye, styleClass=button]'Eye'".equals(event.getSource().toString()))
-            //TODO: PLACE IMG IN RESOUCE AND GET HANDLE FROM THERE
-             imgf = new File("S:\\Nibiru\\Documents\\NetBeansProjects\\Biometrix_Image_Editor\\src\\biometrix_image_editor\\eye.jpg");
+             imgf = new File(path + "/src/biometrix_image_editor/eye.jpg");
         else
             imgf = fc.showOpenDialog(null);
         if (imgf == null){

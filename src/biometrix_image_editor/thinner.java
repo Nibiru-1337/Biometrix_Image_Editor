@@ -22,6 +22,10 @@ import java.awt.image.BufferedImage;
  * @author Nibiru
  */
 public class thinner {
+    private static int [][] bm;
+    private static int width;
+    private static int height;
+    //array look up tables for KMM algorithm
     private static final int[] deletionArray = {3, 5, 7, 12, 13, 14, 15, 20,
                                                 21, 22, 23, 28, 29, 30, 31, 48,
                                                 52, 53, 54, 55, 56, 60, 61, 62,
@@ -40,26 +44,150 @@ public class thinner {
     private static final int[] fourArray = {3, 6, 12, 24, 48, 96, 192, 129, 
                                             7, 14, 28,  56, 112, 224, 193, 131,
                                             15, 30, 60, 120, 240, 225, 195, 135};
-    private static int [][] bm;
-    private static int width;
-    private static int height;
-    //An image thinning method implemented with KMM algorithm
-    protected static BufferedImage thinImgKMM(BufferedImage img){
-        width = img.getWidth();
-        height = img.getHeight();
-        bm = new int [height][width];
-        //mark all black pixels 1, white pixels 0
-        for (int x = 0; x < width; x++){
-            for(int y = 0; y < height; y++){
-                if (basicImageIO.isBlack(img,x,y))
-                    bm[y][x] = 1;
-                else
-                    bm[y][x] = 0;
+    //array look up tables for K3M algorithm
+    private static final int[] A0 = {3, 6, 7, 12, 14, 15, 24, 28, 30, 31, 48, 56, 60,
+                                    62, 63, 96, 112, 120, 124, 126, 127, 129, 131, 135,
+                                    143, 159, 191, 192, 193, 195, 199, 207, 223, 224,
+                                    225, 227, 231, 239, 240, 241, 243, 247, 248, 249,
+                                    251, 252, 253, 254};
+    private static final int[] A1 = {7, 14, 28, 56, 112, 131, 193, 224};
+    private static final int[] A2 = {7, 14, 15, 28, 30, 56, 60, 112, 120, 131, 135,
+                                    193, 195, 224, 225, 240};
+    private static final int[] A3 = {7, 14, 15, 28, 30, 31, 56, 60, 62, 112, 120,
+                                    124, 131, 135, 143, 193, 195, 199, 224, 225, 227,
+                                    240, 241, 248};
+    private static final int[] A4 = {7, 14, 15, 28, 30, 31, 56, 60, 62, 63, 112, 120,
+                                    124, 126, 131, 135, 143, 159, 193, 195, 199, 207,
+                                    224, 225, 227, 231, 240, 241, 243, 248, 249, 252};
+    private static final int[] A5 = {7, 14, 15, 28, 30, 31, 56, 60, 62, 63, 112, 120,
+                                    124, 126, 131, 135, 143, 159, 191, 193, 195, 199,
+                                    207, 224, 225, 227, 231, 239, 240, 241, 243, 248,
+                                    249, 251, 252, 254};
+    private static final int[] A1pix = {3, 6, 7, 12, 14, 15, 24, 28, 30, 31, 48, 56,
+                                        60, 62, 63, 96, 112, 120, 124, 126, 127, 129, 131,
+                                        135, 143, 159, 191, 192, 193, 195, 199, 207, 223,
+                                        224, 225, 227, 231, 239, 240, 241, 243, 247, 248,
+                                        249, 251, 252, 253, 254};
+    //An image thinning method implemented with K3M algorithm
+    protected static BufferedImage thinImgK3M(BufferedImage img){
+        prepare(img);
+        phase0();
+        phase1();
+        phase2();
+        phase3();
+        phase4();
+        phase5();
+        phase6();
+        
+        return bitMapToImg(bm);
+    }
+    //phase 0 for marking border pixels
+    protected static void phase0(){
+        //iterate over all bits in bm (start from 1, end at n-1)
+        for (int x = 1; x < width-1; x++){
+            for ( int y = 1; y < height-1; y++){
+                //check if bit is part of image
+                if ( bm[y][x] == 1){
+                    //change it to 2 if its sum is in A0 look-up array
+                    if ( contains(A0, sumNeighbors(bm, x, y)) ){
+                        bm[y][x] = 2;
+                    }
+                }
             }
         }
+    }
+    //phase 1 for deleting pixels having 3 sticking neighbours
+    protected  static  void phase1(){
+        //iterate over all bits in bm (start from 1, end at n-1)
+        for (int x = 1; x < width-1; x++){
+            for ( int y = 1; y < height-1; y++){
+                //check if bit is a border bit
+                if ( bm[y][x] == 2){
+                    //delete it if its sum is in A1 look-up array
+                    if ( contains(A1, sumNeighbors(bm, x, y)) ){
+                        bm[y][x] = 0;
+                    }
+                }
+            }
+        }
+    }
+    protected  static  void phase2(){
+        //iterate over all bits in bm (start from 1, end at n-1)
+        for (int x = 1; x < width-1; x++){
+            for ( int y = 1; y < height-1; y++){
+                //check if bit is a border bit
+                if ( bm[y][x] == 2){
+                    //delete it if its sum is in A1 look-up array
+                    if ( contains(A2, sumNeighbors(bm, x, y)) ){
+                        bm[y][x] = 0;
+                    }
+                }
+            }
+        }
+    }
+    protected  static  void phase3(){
+        //iterate over all bits in bm (start from 1, end at n-1)
+        for (int x = 1; x < width-1; x++){
+            for ( int y = 1; y < height-1; y++){
+                //check if bit is a border bit
+                if ( bm[y][x] == 2){
+                    //delete it if its sum is in A1 look-up array
+                    if ( contains(A3, sumNeighbors(bm, x, y)) ){
+                        bm[y][x] = 0;
+                    }
+                }
+            }
+        }
+    }
+    protected  static  void phase4(){
+        //iterate over all bits in bm (start from 1, end at n-1)
+        for (int x = 1; x < width-1; x++){
+            for ( int y = 1; y < height-1; y++){
+                //check if bit is a border bit
+                if ( bm[y][x] == 2){
+                    //delete it if its sum is in A1 look-up array
+                    if ( contains(A4, sumNeighbors(bm, x, y)) ){
+                        bm[y][x] = 0;
+                    }
+                }
+            }
+        }
+    }
+    protected  static  void phase5(){
+        //iterate over all bits in bm (start from 1, end at n-1)
+        for (int x = 1; x < width-1; x++){
+            for ( int y = 1; y < height-1; y++){
+                //check if bit is a border bit
+                if ( bm[y][x] == 2){
+                    //delete it if its sum is in A1 look-up array
+                    if ( contains(A5, sumNeighbors(bm, x, y)) ){
+                        bm[y][x] = 0;
+                    }
+                }
+            }
+        }
+    }
+    protected  static  void phase6(){
+        //iterate over all bits in bm (start from 1, end at n-1)
+        for (int x = 1; x < width-1; x++){
+            for ( int y = 1; y < height-1; y++){
+                //check if bit is a border bit
+                if ( bm[y][x] == 2){
+                    //delete it if its sum is in A1 look-up array
+                    if ( contains(A1pix, sumNeighbors(bm, x, y)) ){
+                        bm[y][x] = 0;
+                    }
+                }
+            }
+        }
+    }
+
+    //An image thinning method implemented with KMM algorithm
+    protected static BufferedImage thinImgKMM(BufferedImage img){
+        prepare(img);
         doTests();
         find2and3();
-        printBitmap(bm);
+        printBitmap();
         find4();
         delete4();
         
@@ -76,6 +204,21 @@ public class thinner {
             }
         }
         return bitMapToImg(bm);
+    }
+    //prepare for thinning
+    protected static void prepare(BufferedImage img){
+        width = img.getWidth();
+        height = img.getHeight();
+        bm = new int [height][width];
+        //mark all black pixels 1, white pixels 0
+        for (int x = 0; x < width; x++){
+            for(int y = 0; y < height; y++){
+                if (basicImageIO.isBlack(img,x,y))
+                    bm[y][x] = 1;
+                else
+                    bm[y][x] = 0;
+            }
+        }
     }
     //convert bitmap to image
     private static BufferedImage bitMapToImg(int[][] bm){
@@ -96,11 +239,11 @@ public class thinner {
         return img;
     }
     //print state of bitmap
-    private static void printBitmap(int[][] bitmap){
+    private static void printBitmap(){
         //pritn all bm values
         for (int y = 0; y < height; y++){
             for(int x = 0; x < width; x++){
-                    System.out.print(String.valueOf(bitmap[y][x]));
+                    System.out.print(String.valueOf(bm[y][x]));
                     //System.out.print("["+String.valueOf(x)+","+String.valueOf(y)+"]" );
 
             }
