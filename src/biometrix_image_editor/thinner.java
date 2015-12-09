@@ -68,119 +68,57 @@ public class thinner {
                                         135, 143, 159, 191, 192, 193, 195, 199, 207, 223,
                                         224, 225, 227, 231, 239, 240, 241, 243, 247, 248,
                                         249, 251, 252, 253, 254};
+    private static final int [][] phaseArray = new int[7][];
+    private static boolean K3MrepeatFlag;
+    
     //An image thinning method implemented with K3M algorithm
     protected static BufferedImage thinImgK3M(BufferedImage img){
         prepare(img);
-        phase0();
-        phase1();
-        phase2();
-        phase3();
-        phase4();
-        phase5();
-        phase6();
+        K3MrepeatFlag = false;
+        phaseArray[0] = A0;
+        phaseArray[1] = A1;
+        phaseArray[2] = A2;
+        phaseArray[3] = A3;
+        phaseArray[4] = A4;
+        phaseArray[5] = A5;
+        phaseArray[6] = A1pix;
+        for (int i = 0; i <= 6;i++){
+            phase(i);
+            if (K3MrepeatFlag){
+                i = 0;
+                K3MrepeatFlag = false;
+            }
+        }
         
         return bitMapToImg(bm);
     }
-    //phase 0 for marking border pixels
-    protected static void phase0(){
+    //phases for K3M algorithm
+    protected static void phase(int phase){
+        
         //iterate over all bits in bm (start from 1, end at n-1)
         for (int x = 1; x < width-1; x++){
             for ( int y = 1; y < height-1; y++){
-                //check if bit is part of image
-                if ( bm[y][x] == 1){
-                    //change it to 2 if its sum is in A0 look-up array
-                    if ( contains(A0, sumNeighbors(bm, x, y)) ){
+                //check if we are in phase 0 and bit is part of image
+                if ( phase == 0 && bm[y][x] == 1){
+                    //change it to 2(marked as border bit) if its sum is in A0 look-up array
+                    if ( contains(phaseArray[phase], sumNeighbors(bm, x, y)) ){
                         bm[y][x] = 2;
                     }
                 }
-            }
-        }
-    }
-    //phase 1 for deleting pixels having 3 sticking neighbours
-    protected  static  void phase1(){
-        //iterate over all bits in bm (start from 1, end at n-1)
-        for (int x = 1; x < width-1; x++){
-            for ( int y = 1; y < height-1; y++){
-                //check if bit is a border bit
-                if ( bm[y][x] == 2){
-                    //delete it if its sum is in A1 look-up array
-                    if ( contains(A1, sumNeighbors(bm, x, y)) ){
+                //check if we are not at phase 0 and we are at border bit
+                //delete it accorting to look up phase we are in
+                if ( phase != 0 && bm[y][x] == 2){
+                    //change it to 2 if its sum is in A0 look-up array
+                    if ( contains(phaseArray[phase], sumNeighbors(bm, x, y)) ){
                         bm[y][x] = 0;
+                        K3MrepeatFlag = true;
                     }
                 }
+                
             }
         }
     }
-    protected  static  void phase2(){
-        //iterate over all bits in bm (start from 1, end at n-1)
-        for (int x = 1; x < width-1; x++){
-            for ( int y = 1; y < height-1; y++){
-                //check if bit is a border bit
-                if ( bm[y][x] == 2){
-                    //delete it if its sum is in A1 look-up array
-                    if ( contains(A2, sumNeighbors(bm, x, y)) ){
-                        bm[y][x] = 0;
-                    }
-                }
-            }
-        }
-    }
-    protected  static  void phase3(){
-        //iterate over all bits in bm (start from 1, end at n-1)
-        for (int x = 1; x < width-1; x++){
-            for ( int y = 1; y < height-1; y++){
-                //check if bit is a border bit
-                if ( bm[y][x] == 2){
-                    //delete it if its sum is in A1 look-up array
-                    if ( contains(A3, sumNeighbors(bm, x, y)) ){
-                        bm[y][x] = 0;
-                    }
-                }
-            }
-        }
-    }
-    protected  static  void phase4(){
-        //iterate over all bits in bm (start from 1, end at n-1)
-        for (int x = 1; x < width-1; x++){
-            for ( int y = 1; y < height-1; y++){
-                //check if bit is a border bit
-                if ( bm[y][x] == 2){
-                    //delete it if its sum is in A1 look-up array
-                    if ( contains(A4, sumNeighbors(bm, x, y)) ){
-                        bm[y][x] = 0;
-                    }
-                }
-            }
-        }
-    }
-    protected  static  void phase5(){
-        //iterate over all bits in bm (start from 1, end at n-1)
-        for (int x = 1; x < width-1; x++){
-            for ( int y = 1; y < height-1; y++){
-                //check if bit is a border bit
-                if ( bm[y][x] == 2){
-                    //delete it if its sum is in A1 look-up array
-                    if ( contains(A5, sumNeighbors(bm, x, y)) ){
-                        bm[y][x] = 0;
-                    }
-                }
-            }
-        }
-    }
-    protected  static  void phase6(){
-        //iterate over all bits in bm (start from 1, end at n-1)
-        for (int x = 1; x < width-1; x++){
-            for ( int y = 1; y < height-1; y++){
-                //check if bit is a border bit
-                if ( bm[y][x] == 2){
-                    //delete it if its sum is in A1 look-up array
-                    if ( contains(A1pix, sumNeighbors(bm, x, y)) ){
-                        bm[y][x] = 0;
-                    }
-                }
-            }
-        }
-    }
+
 
     //An image thinning method implemented with KMM algorithm
     protected static BufferedImage thinImgKMM(BufferedImage img){
