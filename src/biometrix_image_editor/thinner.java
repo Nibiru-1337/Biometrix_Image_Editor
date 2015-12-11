@@ -21,7 +21,7 @@ import java.awt.image.BufferedImage;
  *
  * @author Nibiru
  */
-public class thinner {
+public abstract class thinner {
     private static int [][] bm;
     private static int width;
     private static int height;
@@ -50,7 +50,7 @@ public class thinner {
                                     143, 159, 191, 192, 193, 195, 199, 207, 223, 224,
                                     225, 227, 231, 239, 240, 241, 243, 247, 248, 249,
                                     251, 252, 253, 254};
-    private static final int[] A1 = {7, 14, 28, 56, 112, 131, 193, 224};
+    private static final int[] A1 = {7, 14, 28, 56, 112, 131,  192  ,193, 224};
     private static final int[] A2 = {7, 14, 15, 28, 30, 56, 60, 112, 120, 131, 135,
                                     193, 195, 224, 225, 240};
     private static final int[] A3 = {7, 14, 15, 28, 30, 31, 56, 60, 62, 112, 120,
@@ -70,7 +70,9 @@ public class thinner {
                                         249, 251, 252, 253, 254};
     private static final int [][] phaseArray = new int[7][];
     private static boolean K3MrepeatFlag;
+    private static boolean KMMrepeatFlag;
     
+    /*********************K3M ALGORITHM METHODSS*******************************/
     //An image thinning method implemented with K3M algorithm
     protected static BufferedImage thinImgK3M(BufferedImage img){
         prepare(img);
@@ -82,13 +84,23 @@ public class thinner {
         phaseArray[4] = A4;
         phaseArray[5] = A5;
         phaseArray[6] = A1pix;
-        for (int i = 0; i <= 6;i++){
-            phase(i);
-            if (K3MrepeatFlag){
-                i = 0;
+
+        for (int i = 0; i <= 7; i++){
+            //i = 6 only used for checking if we need another iteration
+            //printBitmap();
+            if (i != 7){
+                phase(i);
+            }
+            //when we are done with iterations check if there was a change
+            //reset if there was a change ( i will be changed to 0 on next iteration start)
+            if (K3MrepeatFlag && i == 7){
+                i = -1;
                 K3MrepeatFlag = false;
+                unmarkBorders();
             }
         }
+        //thin to 1 pixel width line
+        //phase(6);
         
         return bitMapToImg(bm);
     }
@@ -108,87 +120,54 @@ public class thinner {
                 //check if we are not at phase 0 and we are at border bit
                 //delete it accorting to look up phase we are in
                 if ( phase != 0 && bm[y][x] == 2){
-                    //change it to 2 if its sum is in A0 look-up array
+                    //change it to 2 if its sum is in appropriate look-up array
                     if ( contains(phaseArray[phase], sumNeighbors(bm, x, y)) ){
                         bm[y][x] = 0;
-                        K3MrepeatFlag = true;
+                        //there was a change so we need another iteration
+                        if (!K3MrepeatFlag) K3MrepeatFlag = true;
                     }
                 }
-                
             }
         }
     }
-
-
+    //unmark border pixels for next iteration of K3M
+    protected static void unmarkBorders(){
+        for (int x = 0; x < width; x++){
+            for(int y = 0; y < height; y++){
+                if ( bm[y][x] == 2)
+                    bm[y][x] = 1;
+            }
+        }
+    }
+    
+    /*********************KMM ALGORITHM METHODSS*******************************/
     //An image thinning method implemented with KMM algorithm
     protected static BufferedImage thinImgKMM(BufferedImage img){
         prepare(img);
         doTests();
-        find2and3();
-        printBitmap();
-        find4();
-        delete4();
-        
-        for (int N = 2; N < 3; N++){
-            for (int x = 0; x < width; x++){
-                for( int y = 0; y < height; y++){
-                    if (bm[y][x] == N){
-                        if ( contains(deletionArray, sumNeighbors(bm, x, y)) ){
-                        bm[y][x] = 0;
+        KMMrepeatFlag = true;
+        while (KMMrepeatFlag){
+            KMMrepeatFlag = false;
+            find2and3();
+            find4();
+            delete4();
+
+            for (int N = 2; N <= 3; N++){
+                for (int x = 0; x < width; x++){
+                    for( int y = 0; y < height; y++){
+                        if (bm[y][x] == N){
+                            if ( contains(deletionArray, sumNeighbors(bm, x, y)) ){
+                                bm[y][x] = 0;
+                                if (!KMMrepeatFlag) KMMrepeatFlag = true;
+                            }
+                            else bm[y][x] = 1;
                         }
-                        else bm[y][x] = 1;
                     }
                 }
             }
         }
         return bitMapToImg(bm);
     }
-    //prepare for thinning
-    protected static void prepare(BufferedImage img){
-        width = img.getWidth();
-        height = img.getHeight();
-        bm = new int [height][width];
-        //mark all black pixels 1, white pixels 0
-        for (int x = 0; x < width; x++){
-            for(int y = 0; y < height; y++){
-                if (basicImageIO.isBlack(img,x,y))
-                    bm[y][x] = 1;
-                else
-                    bm[y][x] = 0;
-            }
-        }
-    }
-    //convert bitmap to image
-    private static BufferedImage bitMapToImg(int[][] bm){
-        Color myWhite = new Color(255, 255, 255);
-        int white = myWhite.getRGB();
-        Color myBlack = new Color(0, 0, 0);
-        int black = myBlack.getRGB();
-        
-        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        for (int x = 0;x < width; x++){
-            for (int y = 0; y < height; y++){
-                if (bm[y][x] == 0)
-                    img.setRGB(x, y, white);
-                else
-                    img.setRGB(x, y, black);
-            }
-        }
-        return img;
-    }
-    //print state of bitmap
-    private static void printBitmap(){
-        //pritn all bm values
-        for (int y = 0; y < height; y++){
-            for(int x = 0; x < width; x++){
-                    System.out.print(String.valueOf(bm[y][x]));
-                    //System.out.print("["+String.valueOf(x)+","+String.valueOf(y)+"]" );
-
-            }
-            System.out.print("\n");
-        }
-    }
-    //iterate over all bits in bm (start from 1, end at n-1)
     //find pixel values of 2 and 3
     private static void find2and3(){
         //first iterate over all bits in bm (start from 1, end at n-1)
@@ -213,7 +192,6 @@ public class thinner {
             
         }
     }
-    //iterate over all bits in bm (start from 1, end at n-1)
     //find pixel values of 4
     private static void find4(){
         for (int x = 0; x < width; x++){
@@ -234,6 +212,37 @@ public class thinner {
                     bm[y][x] = 0;
                 }
             }
+        }
+    }
+
+    /*********************GENERIC METHODS**************************************/
+    //prepare for thinning
+    protected static void prepare(BufferedImage img){
+        width = img.getWidth();
+        height = img.getHeight();
+        bm = new int [height][width];
+        //mark all black pixels 1, white pixels 0
+        for (int x = 0; x < width; x++){
+            for(int y = 0; y < height; y++){
+                if (basicImageIO.isBlack(img,x,y)){
+                    bm[y][x] = 1;
+                }
+                else{
+                    bm[y][x] = 0;
+                }
+            }
+        }
+    }    
+    //print state of bitmap
+    private static void printBitmap(){
+        //pritn all bm values
+        for (int y = 0; y < height; y++){
+            for(int x = 0; x < width; x++){
+                    System.out.print(String.valueOf(bm[y][x]));
+                    //System.out.print("["+String.valueOf(x)+","+String.valueOf(y)+"]" );
+
+            }
+            System.out.print("\n");
         }
     }
     //iterrate over neighbors of x,y and calculate weight
@@ -290,5 +299,23 @@ public class thinner {
         else {System.out.println("FAILED"); return false;}
 
         return true;
+    }
+    //convert bitmap to image
+    private static BufferedImage bitMapToImg(int[][] bm){
+        Color myWhite = new Color(255, 255, 255);
+        int white = myWhite.getRGB();
+        Color myBlack = new Color(0, 0, 0);
+        int black = myBlack.getRGB();
+        
+        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        for (int x = 0;x < width; x++){
+            for (int y = 0; y < height; y++){
+                if (bm[y][x] == 0)
+                    img.setRGB(x, y, white);
+                else
+                    img.setRGB(x, y, black);
+            }
+        }
+        return img;
     }
 }
