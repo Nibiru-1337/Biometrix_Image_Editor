@@ -86,7 +86,7 @@ public abstract class thinner {
         phaseArray[6] = A1pix;
 
         for (int i = 0; i <= 7; i++){
-            //i = 6 only used for checking if we need another iteration
+            //i = 7 only used for checking if we need another iteration
             //printBitmap();
             if (i != 7){
                 phase(i);
@@ -140,7 +140,7 @@ public abstract class thinner {
         }
     }
     
-    /*********************KMM ALGORITHM METHODSS*******************************/
+    /*********************KMM ALGORITHM METHODS********************************/
     //An image thinning method implemented with KMM algorithm
     protected static BufferedImage thinImgKMM(BufferedImage img){
         prepare(img);

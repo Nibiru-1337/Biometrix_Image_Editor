@@ -40,18 +40,15 @@
       <Button fx:id="bHighPass" layoutX="1100.0" layoutY="365.0" mnemonicParsing="false" onAction="#highPassFilter" prefHeight="31.0" prefWidth="169.0" text="High Pass Filter" />
       <Button fx:id="bGauss" layoutX="1100.0" layoutY="450.0" mnemonicParsing="false" onAction="#gaussFilter" prefHeight="31.0" prefWidth="169.0" text="Gauss Filter" />
       <Button fx:id="bSobel" layoutX="1100.0" layoutY="494.0" mnemonicParsing="false" onAction="#sobelFilter" prefHeight="31.0" prefWidth="169.0" text="Sobel Filter" />
-      <BorderPane layoutX="1100.0" layoutY="544.0" prefHeight="198.0" prefWidth="169.0" style="-fx-border-color: black;">
+      <BorderPane layoutX="1100.0" layoutY="544.0" prefHeight="116.0" prefWidth="169.0" style="-fx-border-color: black;">
          <top>
-            <Label prefHeight="115.0" prefWidth="167.0" text="Remember: Apply the proper threshold before attempting to find pupil. Normalize and binarize before thinning." wrapText="true" BorderPane.alignment="CENTER" />
+            <Label prefHeight="111.0" prefWidth="167.0" text="Remember: Apply the proper threshold before attempting to find pupil. Normalize and binarize before thinning." wrapText="true" BorderPane.alignment="CENTER" />
          </top>
-         <center>
-            <Button fx:id="bFindPupilOrg" mnemonicParsing="false" onAction="#findPupil" prefHeight="31.0" prefWidth="172.0" text="Draw over pupil" BorderPane.alignment="CENTER" />
-         </center>
-         <bottom>
-            <Button fx:id="bThinning" mnemonicParsing="false" onAction="#doThinning" prefHeight="31.0" prefWidth="175.0" text="Thinning" BorderPane.alignment="CENTER" />
-         </bottom>
       </BorderPane>
       <Button fx:id="loadFingerprint" layoutX="500.0" layoutY="727.0" mnemonicParsing="false" onAction="#loadImage" prefHeight="31.0" prefWidth="130.0" text="Fingerprint" />
+      <Button fx:id="bThining2" layoutX="1100.0" layoutY="738.0" mnemonicParsing="false" onAction="#doK3M" prefHeight="31.0" prefWidth="169.0" text="Thinning K3M" />
+      <Button fx:id="bFindPupilOrg" layoutX="1102.0" layoutY="660.0" mnemonicParsing="false" onAction="#findPupil" prefHeight="31.0" prefWidth="169.0" text="Draw over pupil" BorderPane.alignment="CENTER" />
+      <Button fx:id="bThinning" layoutX="1101.0" layoutY="700.0" mnemonicParsing="false" onAction="#doKMM" prefHeight="31.0" prefWidth="169.0" text="Thinning KMM" BorderPane.alignment="CENTER" />
     </children>
    <effect>
       <DropShadow />
